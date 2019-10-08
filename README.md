@@ -1,4 +1,4 @@
-# Cloud-Barrage
+# barrage
 云弹幕词库展示，采用canvas技术，实现3d标签云特效！
     <table>
         <tr><td><a href="https://popzoo.github.io/barrage" target="_blank"><img src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/clouldBarrage.gif" width="100%"></a></td><td>&nbsp;&nbsp;</td>          
