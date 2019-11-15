@@ -35,7 +35,144 @@
 		    <a class="nav-link" style="text-decoration:none;color: orange;" href="https://greasyfork.org/zh-CN/scripts/389379">GreaseFork</a>
 		</span>
 	</div>
+	<div  style="position: absolute;left: 50%; top: 20%;line-height: 35px;  text-align: center;margin-left: -240px;">
+		<!-- <p style="font-size: 34px;font-weight: 600;color: blue;margin-top: 20px;">斗鱼用户自定义弹幕</p> -->
+		<h3 style="font-size: 23px;color: #00B2EE;">斗鱼火力脚本用户专有云弹幕,使用请<a style="color: orange;" href="https://raw.githubusercontent.com/popzoo/barrage/master/json/template.json" target="_blank">参考这里</a></h3>
+        <div style="font-size: 20px;text-align: left; background-color: rgba(202,225,255,0.6);border-radius: 4px;">
+        	&nbsp;上传自用云弹幕：<input type="file" id="files" accept=".json" name="file" onchange="fileImport();" style="font-size: 20px;width:310px;"><br>
+        	<!-- <p class='header' id="fill_data_tag" style="font-size: 16px;background-color: rgba(53,53,53,0);">自己的云弹幕链接</p> -->
+        	&nbsp;下载自用云弹幕：<input type="search" id="seek_self_danmu" placeholder="请输入您的斗鱼昵称"  style="font-size: 20px; border-radius: 4px;">
+        		<input type="submit" value="下载" style="font-size: 18px;background-color: rgba(53,53,53,0.6);border-radius: 4px;" id="search_danmu"/>
+    	</div>
+	</div>
 	<canvas></canvas> <!-- 绘图主体 -->
     <script  src="js/index.js"></script>
+    <script src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/js/cos-js-sdk-v5.min.js"></script>
+    <script>
+        //点击导入按钮,使files触发点击事件,然后完成读取文件的操作
+        document.getElementById("search_danmu").addEventListener('click',getCOS);
+        function fileImport() {
+            //获取读取我文件的File对象
+            var selectedFile = document.getElementById('files').files[0];
+            var name = selectedFile.name;//读取选中文件的文件名
+            var size = selectedFile.size;//读取选中文件的大小
+            var fileFlag = false;
+            if(parseInt(size)>1024){
+            	size = Math.ceil(size/1024)+"KB";
+            }else if(parseInt(size)<1024){
+            	size = size +"B";
+            }else if(parseInt(size)>1024*1024){
+            	size = Math.ceil(size/(1024*1024))+"MB";
+            }
+			console.info("文件名:"+name+"; 大小:"+size);
+			// console.info(name.substr(0,name.length-5));
+            if(parseInt(selectedFile.size)<1024*1024*5 && name.substr(name.length-5)==".json"){
+            	// 这里对接播酱查验用户名查看用户真伪
+                fetch('https://bojianger.com/data/api/common/search.do?keyword='+name.substr(0,name.length-5), {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'default',
+                    credentials: 'omit'
+                }).then(result => {
+                    return result.json();
+                }).then(json => {
+                    // let json = JSON.parse(txt);
+                    let userName = json.data.audienceVo.audience_name;
+                    let level = json.data.audienceVo.level;
+                    console.info("用户名："+userName+";等级："+level)
+                    if(userName == name.substr(0,name.length-5) && parseInt(level)>-1){
+                    	// fileFlag = true;
+            			var reader = new FileReader();//这是核心,读取操作就是由它完成.
+            			reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL,默认编码utf-8
+            			reader.onload = function () {
+            			    //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+            			    // console.log(this.result);
+            			    if(isJSON(this.result)){
+            			    	console.info("JSON格式校验正确，正在上传");
+            			    	putCOS(this.result,name);
+            			    }else{
+            			    	alert('JSON文件格式校验错误，请重新编辑JSON文件内容！');
+            			    }
+            			}
+                    }
+                }).catch(err => {
+                	alert("斗鱼用户名检测不存在，请将文本名命名为斗鱼昵称");
+                    // console.error('REQUEST ERROR', err);
+                })              	
+            }else{
+            	alert("请上传不大于5MB的json格式文件");
+            }
+
+        }
+        // json validation
+		function isJSON(str) {
+		    if (typeof str == 'string') {
+		        try {
+		            var obj=JSON.parse(str);
+		            if(typeof obj == 'object' && obj ){
+		                return true;
+		            }else{
+		                return false;
+		            }
+		
+		        } catch(e) {
+		            console.log('error：'+str+'!!!'+e);
+		            return false;
+		        }
+		    }
+		    return false;
+		} 
+    	// ============================= COS Operate =========================
+    	const region = 'ap-beijing', bucket = 'danmu-1253626683';// eslint-disable-next-line
+    	var cos = new COS({SecretId: window.atob("QUtJRENBeFZ6RUp3VnNLY2VSZ05US3dNZGVRd0RHTkp3UGFw"),
+    					   SecretKey: window.atob("VW95c1h2MXhlQ2FwdGQ4dVd1QkN5YTBEQXROaGxhOVI=")});
+    	function putCOS(file, fileName){
+    	    cos.putObject({//add one object
+    	        Bucket: bucket,
+    	        Region: region,
+    	        Key: 'userDanmu/'+fileName,
+    	        Body: file,
+    	    }, function (err, data) {
+    	        if(err){
+    	            alert('文件上传失败，请重试');
+    	            // console.error(err);
+    	        }else{
+    	        	alert('恭喜您，自定义弹幕成功，赶快去刷新脚本页面试试吧！');
+    	        	// let fillObj = document.getElementById("fill_data_tag");
+    	        	// fillObj.setAttribute("style","font-size: 22px;background-color: rgba(53,53,53,0);");
+    	        	// fillObj.innerText = "您的云弹幕地址为："+ data.Location;
+    	        	// console.info(data);
+    	        }
+    	    });
+    	}
+    	// get cos
+    	function getCOS(){
+        	let nickName = document.getElementById("seek_self_danmu").value.trim();
+    	    cos.getObject({//get one object
+    	        Bucket: bucket,
+    	        Region: region,
+    	        Key: 'userDanmu/'+nickName+".json",
+    	    }, function (err, data) {
+    	        if(err){//create a new Array
+    	        	alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+    	            console.error(err || data.Body);
+    	        }else{//get old Array and add new item of fire room
+    	            // console.info(data.Body);
+    	            alert("已获取到您的专属云弹幕，点击后自动下载到本地");
+    	            saveJsonContent(data.Body,nickName+".json");
+    	        }
+    	    });
+    	}
+    	//download json file
+    	function saveJsonContent (content, fileName) {
+    	    let downLink = document.createElement('a')
+    	    downLink.download = fileName;
+    	    let blob = new Blob([content]);//字符内容转换为blod地址
+    	    downLink.href = URL.createObjectURL(blob);
+    	    document.body.appendChild(downLink);// 链接插入到页面
+    	    downLink.click();
+    	    document.body.removeChild(downLink);// 移除下载链接
+    	}
+    </script>    
 </body>
 </html>
