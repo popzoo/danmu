@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+  <title>斗鱼车队大全</title>
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/wolf-scream/gift_effect/master/favicon.ico"> 
+  <style type="text/css">
+        .radio{
+            display: inline-block;
+            position: relative;
+            line-height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .radio input{
+            display: none;
+        }
+        .radio .radio-bg{
+            display: inline-block;
+            height: 18px;
+            width: 18px;
+            margin-right: 5px;
+            padding:;
+            background-color: #45bcb8;
+            /*background-color: #b4b4b4;*/
+            border-radius: 100%;
+            vertical-align: top;
+            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1) inset, 0 1px 4px rgba(0, 0, 0, 0.1) inset, 1px -1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .radio .radio-on{
+            display: true;
+        }
+        .radio input:checked + span.radio-on{
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            border-radius: 100%;
+            background: #FFFFFF;
+            top: 4px;
+            left: 4px;
+            box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.4) inset;
+            background-image: linear-gradient(#ffffff 0, #e7e7e7 100%);
+            transform: scale(0, 0);
+            transition: all 0.2s ease;
+            transform: scale(1, 1);
+            display: inline-block;
+        }
+		.radio input[type="radio"]:disabled{
+		  border-color: #b4b4b4;
+		  background: #b4b4b4;
+		}
+  </style>
+ </head> 
+ <body class="demo-1">
+  <header style="clear:both;"> 
+   <!-- <img src="https://raw.githubusercontent.com/wolf-scream/gift_effect/master/favicon.png"> --> 
+   <h1 style="text-align: center;color: yellow;">斗鱼车队大全</h1> 
+   <div class="collapse" style="white-space: nowrap; text-align:right;  margin-right: 30px; font-size: 22px; color: cyan;">
+    <a class="nav-link" style="text-decoration:none;" href="https://popzoo.github.io/barrage/index.html">词云弹幕</a>
+    <a class="nav-link" style="text-decoration:none;" href="https://wolf-scream.github.io/gift_effect/index.html">礼物大全</a> 
+    <a class="nav-link" style="text-decoration:none;" href="https://wolf-scream.github.io/gift_effect/mortocade.html">车队大全</a>
+    <a class="nav-link" style="text-decoration:none;" href="https://greasyfork.org/zh-CN/scripts/389379">G-Fork</a>
+    <a class="nav-link" style="text-decoration:none;" href="https://github.com/wolf-scream/motorcade">GitHub</a> 
+   </header> 
+   <div style="text-align: left;color:cyan; margin-left: 30px"> 
+    <p>🧐这里几乎涵盖了全部的斗鱼已有车队，数据从斗鱼抓取的，不定时进行更新，方便大家查找;</p> 
+    <p>😘本网页是一次性加载所有图谱，网速慢的朋友请多等待，全部图片加载完毕再按瀑布流排版;</p> 
+   </div> 
+  </div> 
+  <div class="container"> 
+   <div class="content"> 
+    <div class="grid"> 
+     <!-- 			<div class="grid__item" data-size="1280x853"> <a href="images/weix/1.png" class="img-wrap"><img src="images/weix/1.png" alt="img1" />
+				<div class="description description--grid">Assemblage</div>
+				</a> </div>
+			<div class="grid__item" data-size="958x1280"> <a href="images/weix/2.png" class="img-wrap"><img src="images/weix/2.png" alt="img2" />
+				<div class="description description--grid">Demesne</div>
+				</a> </div>
+			<div class="grid__item" data-size="1280x853"> <a href="images/weix/3.png" class="img-wrap"><img src="images/weix/3.png" alt="img3" />
+				<div class="description description--grid">Vestigial</div>
+				</a> </div>
+			<div class="grid__item" data-size="865x1280"> <a href="images/weix/4.png" class="img-wrap"><img src="images/weix/4.png" alt="img4" />
+				<div class="description description--grid">Zephyr</div>
+				</a> </div> --> 
+    </div>
+
+        <label for="ceaseFire" class="radio">
+            <span class="radio-bg"></span>
+            <input type="radio" name="radio_fire" id="ceaseFire"  value="⛔" checked="checked"/>⛔
+            <span class="radio-on"></span>
+        </label>
+        <label for="openFire" class="radio">
+            <span class="radio-bg"></span>
+            <input type="radio" name="radio_fire" id="openFire"  value="🔥" />🔥
+            <span class="radio-on"></span>
+        </label>
+        <label for="bombFire" class="radio">
+            <span class="radio-bg"></span>
+            <input type="radio" name="radio_fire" id="bombFire" disabled="true" value="💥" />💥
+            <span class="radio-on"></span>
+        </label>
+    <!-- /grid --> 
+    <div class="preview"> 
+     <button class="action action--close"><i class="fa fa-times">x</i><span class="text-hidden">Close</span></button> 
+     <div class="description description--preview"></div> 
+    </div> 
+    <!-- /preview --> 
+   </div> 
+  </div> 
+  <!-- /container --> 
+  <div style="text-align: center;color: yellow;font-size: 18px">Copyright &copy; Jade Bone. All rights reserved.
+	<br>More Data Collect from <!-- 添加站长统计 -->
+   </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1278115154'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/z_stat.php%3Fid%3D1278115154%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+ </body>
+</html>
