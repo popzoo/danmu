@@ -163,7 +163,7 @@
                 mode: 'cors',
                 credentials: "omit",
             }).then(response => {// console.info(response.headers.get('ETag'));
-                if(response.status==200 && response.headers.get('ETag')!=null){
+                if(response.headers.get('ETag')!=null){
                     sessionStorage.setItem("personalDanmu", "true");
                     if(code==1){
                         window.location.href = "https://popzoo.github.io/zoo/hiddenManual.html";
