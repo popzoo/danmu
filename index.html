@@ -8,16 +8,11 @@
   <meta content="云端,云弹幕,词库,弹幕" name="Keywords">
   <link rel="shortcut icon" href="https://rawcdn.githack.com/popzoo/pop/9d4121eed5cbb035e55203b8a9e56a73dcf2e6bf/images/favicon.ico"> 
   <style type="text/css">
-		body {
-		  overflow: hidden;
-		  background: url('https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/pics/wolf-girl.jpg') no-repeat;
+		body {overflow: hidden;background-size:100% 100%;background: url('https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/pics/wolf-girl.jpg') no-repeat;}
 		  /*background: url('https://rawcdn.githack.com/popzoo/barrage/a441391396c95442e092725e65510ed9c809d169/pics/wolf-girl.jpg') no-repeat;*/
-		  background-size:100% 100%;
-		}
-		canvas {
-		  width: 100%;
-		  height: 100%;
-		}
+		canvas { width: 100%;height: 100%;}
+        .model_toast {width: 452px;background: rgba(0,0,0,.5);border-radius: 8px;text-align: center;position: fixed;top: 50%;left: 50%;margin-top: -120px;margin-left: -226px;}
+        .model_toast .popup-toast {padding: 38px 40px;text-align: center;font-size: 16px;color: #fff;z-index: 300;}
   </style>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1278032070'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/z_stat.php%3Fid%3D1278032070%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
 </script> 
@@ -35,17 +30,21 @@
 		    <a class="nav-link" style="text-decoration:none;color: orange;" href="https://greasyfork.org/zh-CN/scripts/389379">GreaseFork</a>
 		</span>
 	</div>
-	<div  style="position: absolute;left: 50%; top: 15%;line-height: 35px;  text-align: center;margin-left: -240px;">
+	<div  style="position: absolute;left: 50%; top: 15%;line-height: 35px; width: 450px; text-align: center;margin-left: -230px;">
 		<!-- <p style="font-size: 34px;font-weight: 600;color: blue;margin-top: 20px;">斗鱼用户自定义弹幕</p> -->
-		<h3 style="font-size: 23px;color: #00B2EE;">斗鱼薅羊毛脚本用户专有云弹幕,使用请<a style="color: orange;text-decoration: none;" href="https://popzoo.github.io/zoo/danmuManual.html" target="_blank">参考这里</a></h3>
+		<h3 style="font-size: 23px;color: #00B2EE;">斗鱼薅羊毛脚本专有云弹幕,使用请<a style="color: orange;text-decoration: none;" href="https://popzoo.github.io/zoo/danmuManual.html" target="_blank">参考这里</a></h3>
         <div style="font-size: 20px;text-align: left; background-color: rgba(202,225,255,0.6);border-radius: 4px;">
-        	&nbsp;上传私有云弹幕：<input type="file" id="files" accept=".json" name="file" onchange="fileImport();" style="font-size: 20px;width:310px;"><br/>
-        	<!-- <p class='header' id="fill_data_tag" style="font-size: 16px;background-color: rgba(53,53,53,0);">自己的云弹幕链接</p> -->
-        	&nbsp;下载私有云弹幕：<input type="search" id="seek_self_danmu" placeholder="请输入您的斗鱼昵称"  style="font-size: 20px; border-radius: 4px;" autocomplete="on">
-        		<input type="submit" value="下载" style="font-size: 18px;background-color: rgba(131,111,255,0.6);border-radius: 4px;" id="search_danmu"/>
-                <div style="text-align: center;">上传私有云弹幕的用户可以使用脚本的<a href="https://popzoo.github.io/zoo/hiddenFlower.html" target="_blank" style="text-decoration: none;font-size: 500;color: #C71585;font-weight: bold;">隐藏功能</a>
+            <p id="fill_data_tag" style="text-align: center; font-size: 20px;margin: 5px 0;color:#7FFF00; display: none;"><a href="#" target="_blank" style="text-decoration: none;font-weight: bold;color:#912CEE;" id="visit_self_danmu">点击这里</a>可访问您的私有云弹幕</p>
+        	&nbsp;上传私有云弹幕：<input type="file" id="files" accept=".json" name="file" onchange="fileImport();" style="font-size: 20px;width:260px;background-color:white;border-radius: 4px;"><br/>
+        	&nbsp;请输入斗鱼昵称：<input type="search" id="seek_self_danmu" placeholder="请输入您的斗鱼昵称"  style="font-size: 20px; border-radius: 4px;width:260px;border-color:white;" autocomplete="on">
+                <div style="text-align: center;">
+        		    <input type="button" onclick="getCOS()" value="下载斗鱼弹幕" style="margin:0 6px;font-size: 18px;background-color: rgba(152,245,255,0.7);border-color: rgba(164,211,238,1); border-radius: 30px;" id="search_danmu"/>
+                    <input type="button" onclick="headCOS(1)" value="开启隐藏功能" style="margin:0 6px;font-size: 18px;background-color: rgba(255,140,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_hide_func"/>  
+                    <input type="button" onclick="headCOS(2)" value="查看火力房间" style="margin:0 6px; font-size: 18px;background-color: rgba(118,238,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_fire_room"/>                    
                 </div>
-                <div style="text-align: center;">上传/更新私有弹幕要<strong style="color: #9400D3;">重启浏览器</strong>新弹幕才生效呦</div>
+                <div style="text-align: center;">上传私有云弹幕的用户可以使用脚本的<strong style="color:#C71585;">隐藏功能</strong>
+                </div>
+                <div style="text-align: center;">上传/更新私有弹幕要<strong style="color: #C71585;">重启浏览器</strong>新弹幕才生效呦</div>
         </div>
         <div style="text-align: center;margin-top: 20px;">
             <img style="width:250px;border-radius: 6px;opacity: 0.9" src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/pics/redAlipay.jpg"/>
@@ -53,10 +52,10 @@
 	</div>
 	<canvas></canvas> <!-- 绘图主体 -->
     <script  src="js/danmu.js"></script>
-    <script src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/js/cos-js-sdk-v5.min.js"></script>
+    <!-- <script src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/js/cos-js-sdk-v5.min.js"></script> -->
     <script>
-        //点击导入按钮,使files触发点击事件,然后完成读取文件的操作
-        document.getElementById("search_danmu").addEventListener('click',getCOS);
+        //点击导入按钮,使files触发点击事件,然后完成读取文件的操作 rgba(218,165,32,0.7) rgba(132,112,255,0.7)  #9400D3;
+        const prefix ='https://danmu-1253626683.cos.ap-beijing.myqcloud.com/';
         function fileImport() {
             //获取读取我文件的File对象
             var selectedFile = document.getElementById('files').files[0];
@@ -82,7 +81,6 @@
                 }).then(result => {
                     return result.json();
                 }).then(json => {
-                    // let json = JSON.parse(txt);
                     let userName = json.data.audienceVo.audience_name;
                     let level = json.data.audienceVo.level;
                     console.info("用户名："+userName+";等级："+level)
@@ -100,13 +98,15 @@
             			    	alert('JSON文件格式校验错误，请重新编辑JSON文件内容！');
             			    }
             			}
+                    }else{
+                        alert("用户名格式不正确，请重新输入");
                     }
                 }).catch(err => {
                 	alert("斗鱼用户名检测不存在，请将文本名命名为斗鱼昵称");
                     // console.error('REQUEST ERROR', err);
                 })              	
             }else{
-            	alert("请上传不大于5MB的json格式文件");
+            	alert("请上传不大于5MB且为JSON格式的文件");
             }
 
         }
@@ -128,57 +128,86 @@
 		    }
 		    return false;
 		} 
-    	// ============================= COS Operate =========================
-    	const region = 'ap-beijing', bucket = 'danmu-1253626683';// eslint-disable-next-line
-    	var cos = new COS({SecretId: window.atob("QUtJRENBeFZ6RUp3VnNLY2VSZ05US3dNZGVRd0RHTkp3UGFw"),
-    					   SecretKey: window.atob("VW95c1h2MXhlQ2FwdGQ4dVd1QkN5YTBEQXROaGxhOVI=")});
-    	function putCOS(file, fileName){
-    	    cos.putObject({//add one object
-    	        Bucket: bucket,
-    	        Region: region,
-    	        Key: 'userDanmu/'+fileName,
-    	        Body: file,
-    	    }, function (err, data) {
-    	        if(err){
-    	            alert('文件上传失败，请重试');
-    	            // console.error(err);
-    	        }else{
-    	        	alert('恭喜您，自定义弹幕成功，赶快去刷新脚本页面试试吧！');
-    	        	// let fillObj = document.getElementById("fill_data_tag");
-    	        	// fillObj.setAttribute("style","font-size: 22px;background-color: rgba(53,53,53,0);");
-    	        	// fillObj.innerText = "您的云弹幕地址为："+ data.Location;
-    	        	// console.info(data);
-    	        }
-    	    });
-    	}
-    	// get cos
-    	function getCOS(){
-        	let nickName = document.getElementById("seek_self_danmu").value.trim();
-    	    cos.getObject({//get one object
-    	        Bucket: bucket,
-    	        Region: region,
-    	        Key: 'userDanmu/'+nickName+".json",
-    	    }, function (err, data) {
-    	        if(err){//create a new Array
-    	        	alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
-    	            console.error(err || data.Body);
-    	        }else{//get old Array and add new item of fire room
-    	            // console.info(data.Body);
-    	            alert("已获取到您的专属云弹幕，点击后自动下载到本地");
-    	            saveJsonContent(data.Body,nickName+".json");
-    	        }
-    	    });
-    	}
-    	//download json file
-    	function saveJsonContent (content, fileName) {
-    	    let downLink = document.createElement('a')
-    	    downLink.download = fileName;
-    	    let blob = new Blob([content]);//字符内容转换为blod地址
-    	    downLink.href = URL.createObjectURL(blob);
-    	    document.body.appendChild(downLink);// 链接插入到页面
-    	    downLink.click();
-    	    document.body.removeChild(downLink);// 移除下载链接
-    	}
+    	// ============================= New COS Operate =========================
+        function putCOS(file,fileName){
+            var key = 'userDanmu/'+fileName;// 这里指定上传目录和文件名
+            var fd = new FormData();
+            fd.append('key', key);
+            fd.append('Content-Type','');
+            fd.append('file', file);
+            fetch(prefix,{
+                method: 'POST',
+                mode: 'cors',
+                body: fd,
+                credentials: "omit",
+            }).then(response => {
+                // console.info(response);
+                if(response.headers.get('ETag')!=null){
+                    alert("恭喜您，自定义弹幕成功，赶快去重启浏览器试试新弹幕吧！");
+                    document.getElementById("fill_data_tag").style.display="inherit";
+                    document.getElementById("visit_self_danmu").setAttribute('href',prefix+key);
+                }else{
+                    alert('文件上传失败，请重试');
+                }
+            }).catch(err => {
+                console.error(err);
+                console.error("FireRoomPut:failure");
+            })
+        }
+        //check auth
+        function headCOS(code){
+            let nickName = document.getElementById("seek_self_danmu").value.trim();
+            let reqUrl =prefix+'userDanmu/'+nickName+'.json';
+            fetch(reqUrl,{
+                method: 'HEAD',
+                mode: 'cors',
+                credentials: "omit",
+            }).then(response => {// console.info(response.headers.get('ETag'));
+                if(response.status==200 && response.headers.get('ETag')!=null){
+                    sessionStorage.setItem("personalDanmu", "true");
+                    if(code==1){
+                        window.location.href = "https://popzoo.github.io/zoo/hiddenManual.html";
+                    }else{
+                        window.location.href = "https://popzoo.github.io/pop/fireroom.html";
+                    }                    
+                }
+            }).catch(err => {
+                console.error(err);
+                console.error("FireRoomPut:failure");
+            })
+        }
+        // 获取弹幕文件内容
+        function getCOS(){
+            let nickName = document.getElementById("seek_self_danmu").value.trim();
+            let reqUrl =prefix+'userDanmu/'+nickName+'.json';
+            fetch(reqUrl,{
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: "omit",
+            }).then(res => {
+                return res.text();
+            }).then(text => {  
+                if(text!=null){
+                    saveJsonContent(text,nickName+".json");
+                }else{
+                    alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+                }
+            }).catch(err => {
+                alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+                // console.error(err);
+            })
+        }
+        //download json file
+        function saveJsonContent (content, fileName) {
+            let downLink = document.createElement('a')
+            downLink.download = fileName;
+            let blob = new Blob([content]);//字符内容转换为blod地址
+            downLink.href = URL.createObjectURL(blob);
+            document.body.appendChild(downLink);// 链接插入到页面
+            downLink.click();
+            document.body.removeChild(downLink);// 移除下载链接
+        }
     </script>    
 </body>
 </html>
