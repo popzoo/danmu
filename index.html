@@ -39,8 +39,8 @@
         	&nbsp;请输入斗鱼昵称：<input type="search" id="seek_self_danmu" placeholder="请输入您的斗鱼昵称"  style="font-size: 20px; border-radius: 4px;width:260px;border-color:white;" autocomplete="on">
                 <div style="text-align: center;">
         		    <input type="button" onclick="getCOS()" value="下载私有弹幕" style="margin:0 6px;font-size: 18px;background-color: rgba(152,245,255,0.7);border-color: rgba(164,211,238,1); border-radius: 30px;" id="search_danmu"/>
-                    <input type="button" onclick="headCOS(1)" value="开启隐藏功能" style="margin:0 6px;font-size: 18px;background-color: rgba(255,140,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_hide_func"/>  
-                    <input type="button" onclick="headCOS(2)" value="查看火力房间" style="margin:0 6px; font-size: 18px;background-color: rgba(118,238,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_fire_room"/>                    
+                    <input type="button" onclick="headCOS(this)" value="开启隐藏功能" style="margin:0 6px;font-size: 18px;background-color: rgba(255,140,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_hide_func"/>  
+                    <input type="button" onclick="headCOS(this)" value="查看火力房间" style="margin:0 6px; font-size: 18px;background-color: rgba(118,238,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_fire_room"/>                    
                 </div>
                 <div style="text-align: center;">上传私有云弹幕的用户可以使用脚本的<strong style="color:#C71585;">隐藏功能</strong>
                 </div>
@@ -155,7 +155,7 @@
             })
         }
         //check auth
-        function headCOS(code){
+        function headCOS(obj){
             let nickName = document.getElementById("seek_self_danmu").value.trim();
             let reqUrl =prefix+'userDanmu/'+nickName+'.json';
             fetch(reqUrl,{
@@ -165,15 +165,17 @@
             }).then(response => {// console.info(response.headers.get('ETag'));
                 if(response.headers.get('ETag')!=null){
                     sessionStorage.setItem("personalDanmu", "true");
-                    if(code==1){
+                    if(obj.id=="open_hide_func"){
                         window.location.href = "https://popzoo.github.io/zoo/hiddenManual.html";
-                    }else{
+                    }else if(obj.id=="open_fire_room"){
                         window.location.href = "https://popzoo.github.io/pop/fireroom.html";
                     }                    
+                }else{
+                    alert("验证失败");
                 }
             }).catch(err => {
                 console.error(err);
-                console.error("FireRoomPut:failure");
+                alert("验证失败");
             })
         }
         // 获取弹幕文件内容
