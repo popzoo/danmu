@@ -162,14 +162,15 @@
                 method: 'HEAD',
                 mode: 'cors',
                 credentials: "omit",
-            }).then(response => {// console.info(response.headers.get('ETag'));
+            }).then(response => {
+            console.info(response.headers.get('ETag'));   
                 if(response.headers.get('ETag')!=null){
                     sessionStorage.setItem("personalDanmu", "true");
                     if(obj.id=="open_hide_func"){
                         window.location.href = "https://popzoo.github.io/zoo/hiddenManual.html";
                     }else if(obj.id=="open_fire_room"){
                         window.location.href = "https://popzoo.github.io/pop/fireroom.html";
-                    }                    
+                    }
                 }else{
                     alert("验证失败");
                 }
@@ -180,36 +181,37 @@
         }
         // 获取弹幕文件内容
         function getCOS(){
-            let nickName = document.getElementById("seek_self_danmu").value.trim();
-            let reqUrl =prefix+'userDanmu/'+nickName+'.json';
-            fetch(reqUrl,{
-                method: 'GET',
-                mode: 'cors',
-                cache: 'default',
-                credentials: "omit",
-            }).then(res => {
-                return res.text();
-            }).then(text => {  
-                if(text!=null){
-                    saveJsonContent(text,nickName+".json");
-                }else{
-                    alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
-                }
-            }).catch(err => {
-                alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
-                // console.error(err);
-            })
+            alert("网址受到许多次恶意攻击，为大家数据安全，暂时不支持下载，还请谅解！");
+            // let nickName = document.getElementById("seek_self_danmu").value.trim();
+            // let reqUrl =prefix+'userDanmu/'+nickName+'.json';
+            // fetch(reqUrl,{
+            //     method: 'GET',
+            //     mode: 'cors',
+            //     cache: 'default',
+            //     credentials: "omit",
+            // }).then(res => {
+            //     return res.text();
+            // }).then(text => {  
+            //     if(text!=null){
+            //         saveJsonContent(text,nickName+".json");
+            //     }else{
+            //         alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+            //     }
+            // }).catch(err => {
+            //     alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+            //     // console.error(err);
+            // })
         }
         //download json file
-        function saveJsonContent (content, fileName) {
-            let downLink = document.createElement('a')
-            downLink.download = fileName;
-            let blob = new Blob([content]);//字符内容转换为blod地址
-            downLink.href = URL.createObjectURL(blob);
-            document.body.appendChild(downLink);// 链接插入到页面
-            downLink.click();
-            document.body.removeChild(downLink);// 移除下载链接
-        }
+        // function saveJsonContent (content, fileName) {
+        //     let downLink = document.createElement('a')
+        //     downLink.download = fileName;
+        //     let blob = new Blob([content]);//字符内容转换为blod地址
+        //     downLink.href = URL.createObjectURL(blob);
+        //     document.body.appendChild(downLink);// 链接插入到页面
+        //     downLink.click();
+        //     document.body.removeChild(downLink);// 移除下载链接
+        // }
     </script>    
 </body>
 </html>
