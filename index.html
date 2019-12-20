@@ -39,8 +39,8 @@
         	&nbsp;请输入斗鱼昵称：<input type="search" id="seek_self_danmu" placeholder="使用下列功能需验证"  style="font-size: 20px; border-radius: 4px;width:260px;border-color:white;" autocomplete="on">
                 <div style="text-align: center;">
         		    <input type="button" onclick="getCOS()" value="下载私有弹幕" style="margin:0 6px;font-size: 18px;background-color: rgba(152,245,255,0.7);border-color: rgba(164,211,238,1); border-radius: 30px;" id="search_danmu"/>
-                    <input type="button" onclick="headCOS(this)" value="开启隐藏功能" style="margin:0 6px;font-size: 18px;background-color: rgba(255,140,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_hide_func"/>  
-                    <input type="button" onclick="headCOS(this)" value="查看火力房间" style="margin:0 6px; font-size: 18px;background-color: rgba(118,238,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_fire_room"/>                    
+                    <input type="button" onclick="bojiangCheck(2,this)" value="开启隐藏功能" style="margin:0 6px;font-size: 18px;background-color: rgba(255,140,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_hide_func"/>  
+                    <input type="button" onclick="bojiangCheck(2,this)" value="查看火力房间" style="margin:0 6px; font-size: 18px;background-color: rgba(118,238,0,0.7);border-color: rgba(164,211,238,1);border-radius: 30px;" id="open_fire_room"/>                    
                 </div>
                 <div style="text-align: center;">上传私有云弹幕的用户可以使用脚本的<strong style="color:#C71585;">隐藏功能</strong>
                 </div>
@@ -51,8 +51,8 @@
         </div>
 	</div>
 	<canvas></canvas> <!-- 绘图主体 -->
+    <script src="js/background.js"></script>
     <script src="js/danmu.js"></script>
-    <script src="js/barrage.js"></script>
     <!-- <script src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/js/cos-js-sdk-v5.min.js"></script> -->
 </body>
 </html>
