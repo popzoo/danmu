@@ -1,147 +1,161 @@
-window.onload = () => {
-	const CANVAS = document.getElementsByTagName("canvas")[0];
-	const CTX = CANVAS.getContext("2d");
-	const CHARS = [];
-	const MAX_CHARS = 200;
-	const SEPARATION = 1.8;
+//点击导入按钮,使files触发点击事件,然后完成读取文件的操作 rgba(218,165,32,0.7) rgba(132,112,255,0.7)  #9400D3;
+const prefix ='https://danmu-1253626683.cos.ap-beijing.myqcloud.com/';
+function fileImport() {
+    //获取读取我文件的File对象
+    var selectedFile = document.getElementById('files').files[0];
+    var name = selectedFile.name;//读取选中文件的文件名
+    var size = selectedFile.size;//读取选中文件的大小
+    var fileFlag = false;
+    if(parseInt(size)>1024){
+    	size = Math.ceil(size/1024)+"KB";
+    }else if(parseInt(size)<1024){
+    	size = size +"B";
+    }else if(parseInt(size)>1024*1024){
+    	size = Math.ceil(size/(1024*1024))+"MB";
+    }
+	console.info("文件名:"+name+"; 大小:"+size);
+	// console.info(name.substr(0,name.length-5));
+    if(parseInt(selectedFile.size)<1024*1024*5 && name.substr(name.length-5)==".json"){
+        bojiangCheck(1,name);
+    }else{
+    	alert("请上传不大于5MB且为JSON格式的文件");
+    }
+}
+// json validation
+function isJSON(str) {
+    if (typeof str == 'string') {
+        try {
+            var obj=JSON.parse(str);
+            if(typeof obj == 'object' && obj ){
+                return true;
+            }else{
+                return false;
+            }
+        } catch(e) {
+            console.log('error：'+str+'!!!'+e);
+            return false;
+        }
+    }
+    return false;
+}
+// get Uid from Uname
+function bojiangCheck(code,name){
+    name = code===2 ? document.getElementById("seek_self_danmu").value.trim(): name;
+    fetch('https://bojianger.com/data/api/common/search.do?keyword='+name.substr(0,name.length-5), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'default',
+        credentials: 'omit'
+    }).then(result => {
+        return result.json();
+    }).then(json => {
+        let userName = json.data.audienceVo.audience_name;
+        let uid = json.data.audienceVo.uid;
+        // let level = json.data.audienceVo.level;
+        console.info("用户名："+userName+";uid："+uid+";等级："+level)
+        if(code===1){
+            if(userName == name.substr(0,name.length-5) && uid!=null){
+                var reader = new FileReader();//这是核心,读取操作就是由它完成.
+                reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL,默认编码utf-8
+                reader.onload = function () {//当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+                    if(isJSON(this.result)){// console.log(this.result);
+                        console.info("JSON格式校验正确，正在上传");
+                        putCOS(this.result,uid+'.json');
+                    }else{
+                        alert('JSON文件格式校验错误，请重新编辑JSON文件内容！');
+                    }
+                }
+            }else{
+                alert("用户名格式不正确，请重新输入");
+            }
+        }else if(code===2){
+            headCOS(uid)
+        }
+    }).catch(err => {
+        console.error('无法连接到服务器，请重试！');
+    })     
+}
+// ============================= New COS Operate =========================
+function putCOS(file,fileName){
+    var key = 'cloudDanmu/'+fileName;
+    var fd = new FormData();
+    fd.append('key', key);
+    fd.append('Content-Type','');
+    fd.append('file', file);
+    fetch(prefix,{
+        method: 'POST',
+        mode: 'cors',
+        body: fd,
+        credentials: "omit",
+    }).then(response => {
+        // console.info(response);
+        if(response.headers.get('ETag')!=null){
+            alert("恭喜您，自定义弹幕成功，赶快去重启浏览器试试新弹幕吧！");
+            document.getElementById("fill_data_tag").style.display="inherit";
+            document.getElementById("visit_self_danmu").setAttribute('href',prefix+key);
+        }else{
+            alert('文件上传失败，请重试');
+        }
+    }).catch(err => {
+        console.error(err);
+        console.error("FireRoomPut:failure");
+    })
+}
+//check auth
+function headCOS(uid){
+    let reqUrl =prefix+'cloudDanmu/'+uid+'.json';
+    fetch(reqUrl,{
+        method: 'HEAD',
+        mode: 'cors',
+        credentials: "omit",
+    }).then(response => {
+    console.info(response.headers.get('ETag'));   
+        if(response.headers.get('ETag')!=null){
+            sessionStorage.setItem("personalDanmu", "true");
+            if(obj.id=="open_hide_func"){
+                window.location.href = "https://popzoo.github.io/zoo/hiddenManual.html";
+            }else if(obj.id=="open_fire_room"){
+                window.location.href = "https://popzoo.github.io/pop/firenode.html";
+            }
+        }else{
+            alert("昵称验证失败");
+        }
+    }).catch(err => {
+        console.error(err);
+        alert("昵称验证失败");
+    })
+}
 
-	let ww, wh, camera;
-
-	class Vector {
-		constructor(x, y, z) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-
-		rotate(dir, ang) {
-			const X = this.x;
-			const Y = this.y;
-			const Z = this.z;
-
-			const SIN = Math.sin(ang);
-			const COS = Math.cos(ang);
-
-			if (dir === "x") {
-				this.y = Y * COS - Z * SIN;
-				this.z = Y * SIN + Z * COS;
-			} else if (dir === "y") {
-				this.x = X * COS - Z * SIN;
-				this.z = X * SIN + Z * COS;
-			}
-		}
-
-		project() {
-			const ZP = this.z + camera.z;
-			const DIV = ZP / 600;
-			const XP = (this.x + camera.x) / DIV;
-			const YP = (this.y + camera.y) / DIV;
-			const CENTER = getCenter();
-			return [XP + CENTER[0], YP + CENTER[1], ZP];
-		}
-	}
-
-	class Char {
-		constructor(letter, pos) {
-			this.letter = letter;
-			this.pos = pos;
-		}
-
-		rotate(dir, ang) {
-			this.pos.rotate(dir, ang);
-		}
-
-		render() {
-			const PIXEL = this.pos.project();
-			const XP = PIXEL[0];
-			const YP = PIXEL[1];
-			const MAX_SIZE = 50;
-			const SIZE = (1 / PIXEL[2] * MAX_SIZE) | 0;
-			const BRIGHTNESS = SIZE / MAX_SIZE;
-			const COL = `rgba(255, ${200 * BRIGHTNESS| 0 + 150}, ${200 * BRIGHTNESS | 0 + 50}, ${BRIGHTNESS})`;
-			
-			CTX.beginPath();
-			CTX.fillStyle = COL;
-			CTX.font = SIZE + "px monospace";
-			CTX.fillText(this.letter, XP, YP);
-			CTX.fill();
-			CTX.closePath();
-		}
-	}
-
-	function getCenter() {
-		return [ww / 2, wh / 2];
-	}
-
-	function signedRandom() {
-		return Math.random() - Math.random();
-	}
-
-	function render() {
-		for (let i = 0; i < CHARS.length; i++) {
-			CHARS[i].render();
-		}
-	}
-	
-	let time = 0;
-	function update() {
-		CTX.clearRect(0, 0, ww, wh);
-		for (let i = 0; i < CHARS.length; i++) {
-			const DX = 0.005 * Math.sin(time * 0.001);
-			const DY = 0.005 * Math.cos(time * 0.001);
-			CHARS[i].rotate("x", DX);
-			CHARS[i].rotate("y", DY);
-		}
-		++time;
-	}
-
-	function loop() {
-		window.requestAnimationFrame(loop);
-		update();
-		render();
-	}
-	
-	function getRandomInt(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	};
-
-	function createChars() {
-		let arrCommon = ["主播加油💪","666🤘🤘🤘","点击关注，不会迷路","🐤冲鸭🐤冲鸭🐤","我来冒个泡，🧐憨憨","火力全开","暴躁起来","小礼物🎁刷起来","一发入魂哈🔫","憨憨","热度","键盘敲稀巴烂","火力全开中ญ๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊中ญ๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊中ญ๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊๊",
-                     "可以夸下🐷播","懒得打字","神奇的主播","优质的弹幕","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","幻神","加油助威🚀*10！","这谁顶得住","好了","什么车队","666","奈斯","左边拉满",
-                     "🛸*1000","越来越红","越来越火","越来越富","越来越强👍","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ","来个办卡💳","我又回来了","打卡签到","感谢小礼物","火力必中","欢迎","小伙伴","来波福利吧","丸子不止","弹幕不停","不服来战",
-                     "给主播点个赞","了解一下","🀄🀄🀄","喜欢","什么游戏","带头大哥","高手","主播无敌","哈哈哈","厉害呀","这样呀","对面不行","没用滴","福利姬","粉丝节","鱼吧","带节奏","小黑屋","舒服","开盘",
-                     "精选","一见倾心点关注","两眼沉沦送礼物","三顾房间有归宿","情到深处开贵族","来的潇洒走得酷","点点关注不迷路","北京第九区交通委提醒您","道路千万条，关注第一条","文明刷弹幕，远离小黑屋","咸阳古道音尘短",
-                     "斗鱼房间弹幕长","斗鱼不倒，陪你到老","网络不断，与你相伴","身无彩凤刷礼物","心有灵犀点关注","主播颜值高","没什么好夸的","生活不止眼前的苟且","水电费和鱼翅费","十年修得同船渡","点点关注不迷路",
-                     "百年修得共枕眠","刷刷鱼丸不要钱","关注主播不迷路","开启缘分第一步","看上主播刷礼物","迈向成功第一步"];
-		for (let i = 0; i < MAX_CHARS; i++) {
-			// const CHARACTER = String.fromCharCode((Math.random() * 93 + 34) | 0);
-			const CHARACTER = arrCommon[parseInt(Math.random()*arrCommon.length)];
-			const X = signedRandom() * SEPARATION;
-			const Y = signedRandom() * SEPARATION;
-			const Z = signedRandom() * SEPARATION;
-			const POS = new Vector(X, Y, Z);
-			const CHAR = new Char(CHARACTER, POS);
-			CHARS.push(CHAR);
-		}
-	}
-
-	function setDim() {
-		ww = window.innerWidth;
-		wh = window.innerHeight;
-		CANVAS.width = ww;
-		CANVAS.height = wh;
-	}
-
-	function initCamera() {
-		camera = new Vector(0, 0, SEPARATION + 1);
-	}
-
-	window.onresize = setDim;
-
-	(() => {
-		setDim();
-		initCamera();
-		createChars();
-		loop();
-	})();
-};
+// get Danmu content
+function getCOS(){
+    alert("网址受到许多次恶意攻击，为大家数据安全，暂时不支持下载，还请谅解！");
+    // let nickName = document.getElementById("seek_self_danmu").value.trim();
+    // let reqUrl =prefix+'cloudDanmu/'+nickName+'.json';
+    // fetch(reqUrl,{
+    //     method: 'GET',
+    //     mode: 'cors',
+    //     cache: 'default',
+    //     credentials: "omit",
+    // }).then(res => {
+    //     return res.text();
+    // }).then(text => {  
+    //     if(text!=null){
+    //         saveJsonContent(text,nickName+".json");
+    //     }else{
+    //         alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+    //     }
+    // }).catch(err => {
+    //     alert("没有找到该用户名匹配云弹幕，请检查昵称是否正确！");
+    //     // console.error(err);
+    // })
+}
+//download json file
+// function saveJsonContent (content, fileName) {
+//     let downLink = document.createElement('a')
+//     downLink.download = fileName;
+//     let blob = new Blob([content]);//字符内容转换为blod地址
+//     downLink.href = URL.createObjectURL(blob);
+//     document.body.appendChild(downLink);// 链接插入到页面
+//     downLink.click();
+//     document.body.removeChild(downLink);// 移除下载链接
+// }
