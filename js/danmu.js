@@ -47,11 +47,12 @@ function bojiangCheck(code,name){
         cache: 'default',
         credentials: 'omit'
     }).then(result => {
-        return result.json();
-    }).then(json => {
+        return result.text();
+    }).then(txt => {
+        let json = JSON.parse(txt);
         let userName = json.data.audienceVo.audience_name;
         let uid = json.data.audienceVo.uid;
-        // let level = json.data.audienceVo.level;
+        let level = json.data.audienceVo.level;
         console.info("用户名："+userName+";uid："+uid+";等级："+level)
         if(code===1){
             if(userName == name.substr(0,name.length-5) && uid!=null){
